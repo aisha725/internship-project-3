@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>STRYDE — Move Without Limits</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+
+/* ── THEME VARIABLES ── */
+:root{
+  --bg:#0a0a0a;
+  --bg2:#111111;
+  --bg3:#1a1a1a;
+  --surface:#1f1f1f;
+  --border:#2a2a2a;
+  --border2:#383838;
+  --text:#f0ece4;
+  --muted:#7a7570;
+  --muted2:#5a5550;
+  --accent:#e8c547;
+  --accent2:#d4aa1f;
+  --accent-dim:#2a2410;
+  --red:#e05a4e;
+  --green:#4eae7b;
+  --radius:12px;
+  --radius-lg:20px;
+}
+[data-theme="light"]{
+  --bg:#f5f3ef;
+  --bg2:#edeae4;
+  --bg3:#e5e1d8;
+  --surface:#ffffff;
+  --border:#ddd9d0;
+  --border2:#c8c3b8;
+  --text:#1a1815;
+  --muted:#7a7570;
+  --muted2:#a09a92;
+  --accent:#c4920a;
+  --accent2:#a87a08;
+  --accent-dim:#fdf3da;
+  --red:#c0392b;
+  --green:#27ae60;
+}
+
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:background .35s,color .35s;
+  overflow-x:hidden;
+}
+
+/* ── CURSOR ── */
+body{cursor:none}
+#cursor{
+  position:fixed;width:12px;height:12px;border-radius:50%;
+  background:var(--accent);pointer-events:none;z-index:9999;
+  transition:transform .15s,background .2s;transform:translate(-50%,-50%);
+}
+#cursor-ring{
+  position:fixed;width:36px;height:36px;border-radius:50%;
+  border:1px solid var(--accent);pointer-events:none;z-index:9998;
+  transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .3s;
+  transform:translate(-50%,-50%);opacity:.5;
+}
+
+/* ── NAVBAR ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 3rem;height:68px;
+  background:var(--bg);border-bottom:1px solid var(--border);
+  transition:background .35s,border-color .35s,box-shadow .35s;
+}
+nav.is-scrolled{box-shadow:0 4px 30px rgba(0,0,0,.3)}
+.nav-logo{
+  font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.08em;
+  color:var(--accent);text-decoration:none;
+}
+.nav-links{display:flex;align-items:center;gap:.25rem}
+.js-nav-link{
+  background:none;border:none;cursor:none;
+  font-family:'Outfit',sans-serif;font-size:.875rem;font-weight:500;letter-spacing:.04em;
+  color:var(--muted);padding:.45rem .9rem;border-radius:8px;
+  transition:color .2s,background .2s;text-transform:uppercase;
+}
+.js-nav-link:hover,.js-nav-link.is-active{color:var(--text);background:var(--bg3)}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+.js-theme-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--bg3);border:1px solid var(--border2);cursor:none;
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+  transition:all .25s;
+}
+.js-theme-btn:hover{border-color:var(--accent);transform:rotate(15deg)}
+.nav-cart-btn{
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--accent);color:#000;border:none;border-radius:8px;
+  padding:.45rem 1rem;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:600;
+  cursor:none;transition:all .2s;letter-spacing:.05em;text-transform:uppercase;
+}
+.nav-cart-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+#js-cart-count{
+  background:#000;color:var(--accent);border-radius:50%;
+  width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;
+}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;padding:0 3rem;padding-top:68px;
+  position:relative;overflow:hidden;
+}
+.hero-bg-text{
+  position:absolute;right:-2rem;top:50%;transform:translateY(-50%);
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(120px,18vw,260px);
+  color:transparent;-webkit-text-stroke:1px var(--border2);
+  pointer-events:none;user-select:none;white-space:nowrap;z-index:0;
+  transition:color .35s;
+}
+.hero-content{position:relative;z-index:1;max-width:700px}
+.hero-eyebrow{
+  font-size:.75rem;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:.75rem;
+}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:1px;background:var(--accent)}
+.hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3.5rem,9vw,8rem);
+  line-height:.95;letter-spacing:.02em;
+  margin-bottom:1.75rem;
+}
+.hero-title em{
+  font-family:'Playfair Display',serif;font-style:italic;
+  color:var(--accent);display:block;
+}
+.hero-desc{
+  font-size:1.05rem;color:var(--muted);line-height:1.75;
+  max-width:480px;margin-bottom:2.5rem;font-weight:300;
+}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-primary{
+  background:var(--accent);color:#000;border:none;border-radius:10px;
+  padding:.85rem 2rem;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:600;
+  cursor:none;transition:all .25s;letter-spacing:.05em;text-transform:uppercase;
+}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-2px)}
+.btn-ghost{
+  background:transparent;color:var(--text);
+  border:1px solid var(--border2);border-radius:10px;
+  padding:.85rem 2rem;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:500;
+  cursor:none;transition:all .25s;letter-spacing:.04em;text-transform:uppercase;
+}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.hero-stats{
+  display:flex;gap:3rem;margin-top:3.5rem;
+  padding-top:2.5rem;border-top:1px solid var(--border);
+}
+.hero-stat-num{
+  font-family:'Bebas Neue',sans-serif;font-size:2.2rem;
+  letter-spacing:.03em;color:var(--accent);
+}
+.hero-stat-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.15rem}
+
+/* ── MARQUEE ── */
+.marquee-wrap{
+  overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:.75rem 0;background:var(--bg2);
+}
+.marquee-track{
+  display:flex;gap:2rem;width:max-content;
+  animation:marquee 28s linear infinite;
+}
+.marquee-item{
+  font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.12em;
+  color:var(--muted2);white-space:nowrap;display:flex;align-items:center;gap:2rem;
+}
+.marquee-item::after{content:'✦';color:var(--accent);font-size:.7rem}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SECTION SKELETON ── */
+.section{padding:6rem 3rem;max-width:1200px;margin:0 auto}
+.section-eyebrow{
+  font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:.6rem;display:flex;align-items:center;gap:.6rem;
+}
+.section-eyebrow::before{content:'';width:24px;height:1px;background:var(--accent);display:block}
+.section-title{
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,4vw,3.5rem);
+  letter-spacing:.02em;margin-bottom:.6rem;line-height:1.05;
+}
+.section-sub{color:var(--muted);font-size:.95rem;line-height:1.7;font-weight:300;max-width:500px;margin-bottom:2.5rem}
+
+/* ── PRODUCT GRID ── */
+.filter-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.js-filter-btn{
+  background:var(--bg3);border:1px solid var(--border);border-radius:100px;
+  padding:.4rem 1.1rem;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:500;
+  color:var(--muted);cursor:none;transition:all .22s;text-transform:uppercase;letter-spacing:.06em;
+}
+.js-filter-btn:hover{border-color:var(--border2);color:var(--text)}
+.js-filter-btn.is-active{background:var(--accent);border-color:var(--accent);color:#000;font-weight:600}
+
+.product-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.5rem;
+}
+.product-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  overflow:hidden;transition:all .3s cubic-bezier(.4,0,.2,1);cursor:none;
+  position:relative;
+}
+.product-card:hover{transform:translateY(-6px);border-color:var(--border2);box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.product-card.is-hidden{display:none}
+.product-img-wrap{
+  height:220px;background:var(--bg3);display:flex;
+  align-items:center;justify-content:center;position:relative;overflow:hidden;
+  font-size:5rem;
+}
+.product-badge{
+  position:absolute;top:.75rem;left:.75rem;
+  background:var(--accent);color:#000;
+  font-size:.65rem;font-weight:700;padding:.25rem .65rem;border-radius:100px;
+  text-transform:uppercase;letter-spacing:.08em;
+}
+.product-badge.is-sale{background:var(--red);color:#fff}
+.product-body{padding:1.25rem}
+.product-cat{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem}
+.product-name{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.04em;margin-bottom:.5rem}
+.product-price{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
+.price-current{font-size:1.1rem;font-weight:600;color:var(--accent)}
+.price-old{font-size:.85rem;color:var(--muted);text-decoration:line-through}
+.js-add-cart{
+  width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  padding:.65rem;font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:600;
+  color:var(--text);cursor:none;transition:all .22s;text-transform:uppercase;letter-spacing:.06em;
+}
+.js-add-cart:hover{background:var(--accent);border-color:var(--accent);color:#000}
+.js-add-cart.is-added{background:var(--green);border-color:var(--green);color:#fff}
+
+/* ── SIZE SELECTOR ── */
+.size-section{padding:6rem 3rem;background:var(--bg2)}
+.size-inner{max-width:1200px;margin:0 auto}
+.size-picker-wrap{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;
+}
+@media(max-width:700px){.size-picker-wrap{grid-template-columns:1fr}}
+.size-grid{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.5rem}
+.js-size-btn{
+  width:56px;height:56px;border-radius:10px;
+  background:var(--bg3);border:1px solid var(--border);
+  font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:500;
+  color:var(--muted);cursor:none;transition:all .2s;
+}
+.js-size-btn:hover{border-color:var(--border2);color:var(--text)}
+.js-size-btn.is-active{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+.js-size-btn.is-unavailable{opacity:.3;cursor:not-allowed;text-decoration:line-through}
+#js-size-display{
+  font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;
+  color:var(--muted);margin-bottom:1.5rem;min-height:1.5em;
+  transition:color .2s;
+}
+#js-size-display.is-selected{color:var(--accent)}
+.color-swatches{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.js-color-swatch{
+  width:36px;height:36px;border-radius:50%;cursor:none;
+  border:2px solid transparent;transition:all .2s;
+  position:relative;
+}
+.js-color-swatch.is-active::after{
+  content:'✓';position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;font-weight:700;color:#000;
+}
+.js-color-swatch:hover{transform:scale(1.15)}
+.picker-summary{
+  background:var(--bg3);border-radius:12px;padding:1.25rem;border:1px solid var(--border);
+}
+.picker-summary-row{
+  display:flex;justify-content:space-between;
+  padding:.5rem 0;border-bottom:1px solid var(--border);
+  font-size:.875rem;
+}
+.picker-summary-row:last-of-type{border-bottom:none}
+.picker-summary-label{color:var(--muted)}
+.picker-summary-val{font-weight:500}
+#js-picker-add{
+  width:100%;background:var(--accent);color:#000;border:none;border-radius:10px;
+  padding:.85rem;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;
+  cursor:none;transition:all .25s;text-transform:uppercase;letter-spacing:.06em;margin-top:1rem;
+}
+#js-picker-add:hover{background:var(--accent2);transform:translateY(-2px)}
+#js-picker-add:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* ── DARK MODE TOGGLE SECTION ── */
+.theme-section{
+  padding:5rem 3rem;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.theme-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+.theme-text h2{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.03em;margin-bottom:.5rem}
+.theme-text p{color:var(--muted);font-size:.9rem;line-height:1.7;max-width:400px}
+.theme-toggle-big{
+  display:flex;align-items:center;gap:1.5rem;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.5rem 2rem;
+}
+.toggle-switch-wrap{display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.js-toggle-switch{
+  width:68px;height:36px;border-radius:100px;
+  background:var(--bg3);border:1px solid var(--border2);
+  position:relative;cursor:none;transition:background .3s,border-color .3s;
+}
+.js-toggle-switch.is-on{background:var(--accent);border-color:var(--accent)}
+.toggle-knob{
+  position:absolute;top:4px;left:4px;
+  width:26px;height:26px;border-radius:50%;background:#fff;
+  transition:transform .3s cubic-bezier(.4,0,.2,1),background .3s;
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+.js-toggle-switch.is-on .toggle-knob{transform:translateX(32px)}
+.toggle-label{font-size:.75rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+#js-toggle-mode-text{font-size:.95rem;font-weight:500;color:var(--text);width:110px}
+#js-toggle-icon{font-size:2rem}
+
+/* ── NEWSLETTER ── */
+.newsletter-section{
+  padding:6rem 3rem;background:var(--bg2);
+}
+.newsletter-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+}
+@media(max-width:700px){.newsletter-inner{grid-template-columns:1fr}}
+.newsletter-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3rem);letter-spacing:.02em;margin-bottom:.75rem}
+.newsletter-sub{color:var(--muted);font-size:.95rem;line-height:1.7;font-weight:300}
+.nl-form{display:flex;flex-direction:column;gap:.85rem}
+.nl-row{display:flex;flex-direction:column;gap:.4rem}
+.nl-label{font-size:.8rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.nl-input{
+  background:var(--surface);border:1px solid var(--border2);border-radius:10px;
+  padding:.75rem 1rem;font-family:'Outfit',sans-serif;font-size:.95rem;color:var(--text);
+  transition:border-color .2s,background .2s;outline:none;
+}
+.nl-input:focus{border-color:var(--accent);background:var(--bg)}
+.nl-input.is-valid{border-color:var(--green)}
+.nl-input.is-error{border-color:var(--red)}
+.nl-hint{font-size:.76rem;min-height:1em;transition:color .2s}
+.nl-hint.is-ok{color:var(--green)}
+.nl-hint.is-err{color:var(--red)}
+.nl-pref{display:flex;flex-wrap:wrap;gap:.5rem}
+.js-pref-btn{
+  background:var(--bg3);border:1px solid var(--border);border-radius:100px;
+  padding:.35rem .9rem;font-size:.78rem;font-weight:500;color:var(--muted);
+  cursor:none;transition:all .2s;text-transform:uppercase;letter-spacing:.06em;
+}
+.js-pref-btn.is-active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.nl-submit{
+  background:var(--accent);color:#000;border:none;border-radius:10px;
+  padding:.85rem;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;
+  cursor:none;transition:all .25s;text-transform:uppercase;letter-spacing:.06em;
+}
+.nl-submit:hover{background:var(--accent2);transform:translateY(-1px)}
+.nl-submit:disabled{opacity:.4;cursor:not-allowed;transform:none}
+#js-nl-msg{
+  padding:.75rem 1rem;border-radius:10px;font-size:.875rem;
+  display:none;margin-top:.25rem;
+}
+#js-nl-msg.ok{display:block;background:var(--bg3);color:var(--green);border:1px solid var(--green)}
+#js-nl-msg.err{display:block;background:var(--bg3);color:var(--red);border:1px solid var(--red)}
+
+/* ── CART DRAWER ── */
+#js-cart-drawer{
+  position:fixed;top:0;right:0;bottom:0;width:380px;max-width:95vw;
+  background:var(--bg2);border-left:1px solid var(--border);
+  transform:translateX(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  z-index:800;display:flex;flex-direction:column;
+}
+#js-cart-drawer.is-open{transform:translateX(0)}
+.cart-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:790;
+  opacity:0;pointer-events:none;transition:opacity .35s;
+}
+.cart-overlay.is-visible{opacity:1;pointer-events:all}
+.cart-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.5rem;border-bottom:1px solid var(--border);
+}
+.cart-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.06em}
+.js-cart-close{
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  width:36px;height:36px;cursor:none;display:flex;align-items:center;justify-content:center;
+  font-size:1rem;color:var(--muted);transition:all .2s;
+}
+.js-cart-close:hover{color:var(--text);border-color:var(--border2)}
+.cart-items{flex:1;overflow-y:auto;padding:1rem 1.5rem}
+.cart-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;color:var(--muted);gap:.75rem;
+}
+.cart-empty-icon{font-size:3rem;opacity:.4}
+.cart-item{
+  display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border);
+  align-items:flex-start;
+}
+.cart-item-img{
+  width:68px;height:68px;border-radius:10px;background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;
+}
+.cart-item-name{font-weight:500;font-size:.9rem;margin-bottom:.25rem}
+.cart-item-meta{font-size:.78rem;color:var(--muted)}
+.cart-item-price{font-weight:600;color:var(--accent);font-size:.9rem;margin-top:.25rem}
+.js-cart-remove{
+  background:none;border:none;color:var(--muted2);cursor:none;font-size:.95rem;
+  padding:.2rem;transition:color .2s;margin-left:auto;
+}
+.js-cart-remove:hover{color:var(--red)}
+.cart-footer{
+  padding:1.5rem;border-top:1px solid var(--border);
+}
+.cart-total-row{
+  display:flex;justify-content:space-between;
+  font-size:1rem;font-weight:600;margin-bottom:1.25rem;
+}
+.cart-total-label{color:var(--muted)}
+.cart-checkout{
+  width:100%;background:var(--accent);color:#000;border:none;border-radius:10px;
+  padding:.9rem;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:700;
+  cursor:none;transition:all .25s;text-transform:uppercase;letter-spacing:.06em;
+}
+.cart-checkout:hover{background:var(--accent2)}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:4rem 3rem 2.5rem;
+}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;
+}
+@media(max-width:768px){.footer-top{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.footer-top{grid-template-columns:1fr}}
+.footer-brand .nav-logo{display:block;margin-bottom:.75rem}
+.footer-brand p{color:var(--muted);font-size:.875rem;line-height:1.7;max-width:260px}
+.footer-col h4{
+  font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text);margin-bottom:1rem;
+}
+.footer-col a{
+  display:block;color:var(--muted);font-size:.875rem;margin-bottom:.5rem;
+  text-decoration:none;transition:color .2s;cursor:none;
+}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{
+  border-top:1px solid var(--border);padding-top:1.5rem;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;
+}
+.footer-copy{font-size:.8rem;color:var(--muted2)}
+.footer-legal{display:flex;gap:1.5rem}
+.footer-legal a{font-size:.8rem;color:var(--muted2);text-decoration:none;cursor:none;transition:color .2s}
+.footer-legal a:hover{color:var(--muted)}
+
+/* ── TOAST ── */
+#js-toast{
+  position:fixed;bottom:5rem;left:50%;
+  transform:translateX(-50%) translateY(calc(100% + 6rem));
+  background:#1a1a1a;color:#f0ece4;
+  border-radius:100px;padding:.7rem 1.6rem;font-size:.85rem;font-weight:500;
+  z-index:9999;white-space:nowrap;pointer-events:none;
+  box-shadow:0 8px 30px rgba(0,0,0,.35);
+  opacity:0;
+  transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .4s ease;
+}
+#js-toast.is-visible{
+  transform:translateX(-50%) translateY(0);
+  opacity:1;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.animate-in{opacity:0}
+.animate-in.is-visible{animation:fadeUp .6s ease both}
+
+@media(max-width:600px){
+  nav{padding:0 1.25rem}
+  .nav-links{display:none}
+  #hero{padding:0 1.25rem;padding-top:68px}
+  .section,.theme-section,.newsletter-section{padding:4rem 1.25rem}
+  footer{padding:3rem 1.25rem 2rem}
+  .hero-stats{gap:1.5rem}
+  #js-cart-drawer{width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="js-cart-overlay"></div>
+
+<!-- TOAST -->
+<div id="js-toast"></div>
+
+<!-- NAVBAR -->
+<nav id="js-navbar">
+  <a class="nav-logo" href="#">STRYDE</a>
+  <div class="nav-links">
+    <button class="js-nav-link is-active" data-target="products">Collection</button>
+    <button class="js-nav-link" data-target="configurator">Build Yours</button>
+    <button class="js-nav-link" data-target="theme-section">Experience</button>
+    <button class="js-nav-link" data-target="newsletter">Community</button>
+  </div>
+  <div class="nav-actions">
+    <button class="js-theme-btn" id="js-theme-nav" title="Toggle theme">🌙</button>
+    <button class="nav-cart-btn" id="js-open-cart">
+      Bag <span id="js-cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-text" aria-hidden="true">STRYDE</div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">New Season 2025 Drop</div>
+    <h1 class="hero-title">
+      Move<br>Without
+      <em>Limits.</em>
+    </h1>
+    <p class="hero-desc">Engineered for performance. Designed for the streets. STRYDE footwear is where precision meets culture — every step, every surface, every story.</p>
+    <div class="hero-btns">
+      <button class="btn-primary js-nav-link" data-target="products">Shop Collection</button>
+      <button class="btn-ghost js-nav-link" data-target="configurator">Build Yours →</button>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">48K+</div>
+        <div class="hero-stat-label">Happy Customers</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">320+</div>
+        <div class="hero-stat-label">Styles Available</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">4.9★</div>
+        <div class="hero-stat-label">Average Rating</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track" id="js-marquee-track">
+    <span class="marquee-item">Free Shipping Over $100</span>
+    <span class="marquee-item">New Arrivals Weekly</span>
+    <span class="marquee-item">Engineered Performance</span>
+    <span class="marquee-item">30-Day Returns</span>
+    <span class="marquee-item">Athlete-Tested Design</span>
+    <span class="marquee-item">Sustainable Materials</span>
+    <span class="marquee-item">Limited Edition Drops</span>
+    <span class="marquee-item">Free Shipping Over $100</span>
+    <span class="marquee-item">New Arrivals Weekly</span>
+    <span class="marquee-item">Engineered Performance</span>
+    <span class="marquee-item">30-Day Returns</span>
+    <span class="marquee-item">Athlete-Tested Design</span>
+    <span class="marquee-item">Sustainable Materials</span>
+    <span class="marquee-item">Limited Edition Drops</span>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section id="products" style="padding:6rem 3rem;max-width:1200px;margin:0 auto">
+  <div class="animate-in">
+    <div class="section-eyebrow">The Collection</div>
+    <h2 class="section-title">Iconic Silhouettes</h2>
+    <p class="section-sub">From track to tarmac — every model is built around a single obsession: how it feels to move.</p>
+  </div>
+
+  <div class="filter-bar animate-in">
+    <button class="js-filter-btn is-active" data-filter="all">All</button>
+    <button class="js-filter-btn" data-filter="running">Running</button>
+    <button class="js-filter-btn" data-filter="lifestyle">Lifestyle</button>
+    <button class="js-filter-btn" data-filter="training">Training</button>
+    <button class="js-filter-btn" data-filter="limited">Limited</button>
+  </div>
+
+  <div class="product-grid" id="js-product-grid">
+
+    <div class="product-card animate-in" data-category="running">
+      <div class="product-img-wrap" style="background:#1a1614">
+        <span style="font-size:4.5rem">👟</span>
+        <span class="product-badge">New</span>
+      </div>
+      <div class="product-body">
+        <div class="product-cat">Running</div>
+        <div class="product-name">VAPOR RUSH X1</div>
+        <div class="product-price"><span class="price-current">$189</span></div>
+        <button class="js-add-cart" data-name="Vapor Rush X1" data-price="189" data-emoji="👟">Add to Bag</button>
+      </div>
+    </div>
+
+    <div class="product-card animate-in" data-category="lifestyle">
+      <div class="product-img-wrap" style="background:#141a1a">
+        <span style="font-size:4.5rem">👠</span>
+        <span class="product-badge is-sale">Sale</span>
+      </div>
+      <div class="product-body">
+        <div class="product-cat">Lifestyle</div>
+        <div class="product-name">URBAN DRIFT LOW</div>
+        <div class="product-price">
+          <span class="price-current">$129</span>
+          <span class="price-old">$160</span>
+        </div>
+        <button class="js-add-cart" data-name="Urban Drift Low" data-price="129" data-emoji="👠">Add to Bag</button>
+      </div>
+    </div>
+
+    <div class="product-card animate-in" data-category="training">
+      <div class="product-img-wrap" style="background:#0f141a">
+        <span style="font-size:4.5rem">🥾</span>
+      </div>
+      <div class="product-body">
+        <div class="product-cat">Training</div>
+        <div class="product-name">FORGE PRO ELITE</div>
+        <div class="product-price"><span class="price-current">$215</span></div>
+        <button class="js-add-cart" data-name="Forge Pro Elite" data-price="215" data-emoji="🥾">Add to Bag</button>
+      </div>
+    </div>
+
+    <div class="product-card animate-in" data-category="limited">
+      <div class="product-img-wrap" style="background:#1a1508">
+        <span style="font-size:4.5rem">✨</span>
+        <span class="product-badge">Limited</span>
+      </div>
+      <div class="product-body">
+        <div class="product-cat">Limited Edition</div>
+        <div class="product-name">GOLD PHANTOM 001</div>
+        <div class="product-price"><span class="price-current">$349</span></div>
+        <button class="js-add-cart" data-name="Gold Phantom 001" data-price="349" data-emoji="✨">Add to Bag</button>
+      </div>
+    </div>
+
+    <div class="product-card animate-in" data-category="running">
+      <div class="product-img-wrap" style="background:#0a1218">
+        <span style="font-size:4.5rem">🏃</span>
+        <span class="product-badge">New</span>
+      </div>
+      <div class="product-body">
+        <div class="product-cat">Running</div>
+        <div class="product-name">PULSE CARBON 4</div>
+        <div class="product-price"><span class="price-current">$259</span></div>
+        <button class="js-add-cart" data-name="Pulse Carbon 4" data-price="259" data-emoji="🏃">Add to Bag</button>
+      </div>
+    </div>
+
+    <div class="product-card animate-in" data-category="lifestyle">
+      <div class="product-img-wrap" style="background:#14181a">
+        <span style="font-size:4.5rem">👞</span>
+      </div>
+      <div class="product-body">
+        <div class="product-cat">Lifestyle</div>
+        <div class="product-name">CLASSIC COURT OG</div>
+        <div class="product-price">
+          <span class="price-current">$109</span>
+          <span class="price-old">$135</span>
+        </div>
+        <button class="js-add-cart" data-name="Classic Court OG" data-price="109" data-emoji="👞">Add to Bag</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SIZE / COLOR CONFIGURATOR -->
+<div class="size-section" id="configurator">
+  <div class="size-inner">
+    <div class="animate-in">
+      <div class="section-eyebrow">Build Yours</div>
+      <h2 class="section-title">Configure Your Pair</h2>
+      <p class="section-sub">Pick your size and colorway. We'll do the rest.</p>
+    </div>
+    <div class="size-picker-wrap animate-in">
+      <div>
+        <p style="font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Select Size (US)</p>
+        <div class="size-grid">
+          <button class="js-size-btn" data-size="6">6</button>
+          <button class="js-size-btn" data-size="6.5">6.5</button>
+          <button class="js-size-btn" data-size="7">7</button>
+          <button class="js-size-btn is-unavailable" data-size="7.5" disabled>7.5</button>
+          <button class="js-size-btn" data-size="8">8</button>
+          <button class="js-size-btn" data-size="8.5">8.5</button>
+          <button class="js-size-btn" data-size="9">9</button>
+          <button class="js-size-btn" data-size="9.5">9.5</button>
+          <button class="js-size-btn" data-size="10">10</button>
+          <button class="js-size-btn is-unavailable" data-size="10.5" disabled>10.5</button>
+          <button class="js-size-btn" data-size="11">11</button>
+          <button class="js-size-btn" data-size="12">12</button>
+        </div>
+        <p id="js-size-display">No size selected</p>
+
+        <p style="font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">Select Color</p>
+        <div class="color-swatches">
+          <button class="js-color-swatch" data-color="Midnight Black" style="background:#1a1a1a;border-color:#444" title="Midnight Black"></button>
+          <button class="js-color-swatch" data-color="Cloud White" style="background:#f0ece4;border-color:#ccc" title="Cloud White"></button>
+          <button class="js-color-swatch" data-color="Solar Gold" style="background:#e8c547;border-color:#c4920a" title="Solar Gold"></button>
+          <button class="js-color-swatch" data-color="Deep Navy" style="background:#1a2a4a;border-color:#2a4a7a" title="Deep Navy"></button>
+          <button class="js-color-swatch" data-color="Ember Red" style="background:#8b2020;border-color:#c0392b" title="Ember Red"></button>
+          <button class="js-color-swatch" data-color="Forest" style="background:#1a3a2a;border-color:#2d6a4f" title="Forest"></button>
+        </div>
+      </div>
+
+      <div>
+        <p style="font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Your Configuration</p>
+        <div class="picker-summary">
+          <div class="picker-summary-row">
+            <span class="picker-summary-label">Model</span>
+            <span class="picker-summary-val">Vapor Rush X1</span>
+          </div>
+          <div class="picker-summary-row">
+            <span class="picker-summary-label">Size</span>
+            <span class="picker-summary-val" id="js-summary-size">—</span>
+          </div>
+          <div class="picker-summary-row">
+            <span class="picker-summary-label">Color</span>
+            <span class="picker-summary-val" id="js-summary-color">—</span>
+          </div>
+          <div class="picker-summary-row">
+            <span class="picker-summary-label">Price</span>
+            <span class="picker-summary-val" style="color:var(--accent)">$189</span>
+          </div>
+        </div>
+        <button id="js-picker-add" disabled>Select Size & Color to Continue</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THEME EXPERIENCE -->
+<div class="theme-section" id="theme-section">
+  <div class="theme-inner">
+    <div class="theme-text animate-in">
+      <h2 class="section-title" style="margin-bottom:.5rem">Your Aesthetic,<br>Your Call.</h2>
+      <p>STRYDE adapts to your vibe. Switch between a clean daylight look and our signature dark mode — built for night owls and studio sessions alike.</p>
+    </div>
+    <div class="theme-toggle-big animate-in">
+      <div id="js-toggle-icon" style="font-size:2rem">🌙</div>
+      <div class="toggle-switch-wrap">
+        <button class="js-toggle-switch" id="js-big-toggle" aria-label="Toggle theme">
+          <div class="toggle-knob"></div>
+        </button>
+        <span class="toggle-label">Theme</span>
+      </div>
+      <div>
+        <div id="js-toggle-mode-text" style="font-size:.95rem;font-weight:500;color:var(--text);width:110px">Dark Mode</div>
+        <div style="font-size:.78rem;color:var(--muted);margin-top:.2rem">Click to switch</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="newsletter-section" id="newsletter">
+  <div class="newsletter-inner">
+    <div class="animate-in">
+      <div class="section-eyebrow">Join the Community</div>
+      <h2 class="newsletter-title">First On Every<br>Drop. Always.</h2>
+      <p class="newsletter-sub">Get early access to limited releases, member-only offers, and the STRYDE monthly edit delivered straight to your inbox.</p>
+    </div>
+    <div class="nl-form animate-in">
+      <div class="nl-row">
+        <label class="nl-label" for="js-nl-name">Full Name</label>
+        <input class="nl-input" id="js-nl-name" type="text" placeholder="Your name" autocomplete="off"/>
+        <span class="nl-hint" id="js-nl-hint-name"></span>
+      </div>
+      <div class="nl-row">
+        <label class="nl-label" for="js-nl-email">Email Address</label>
+        <input class="nl-input" id="js-nl-email" type="email" placeholder="you@example.com" autocomplete="off"/>
+        <span class="nl-hint" id="js-nl-hint-email"></span>
+      </div>
+      <div class="nl-row">
+        <label class="nl-label" style="margin-bottom:.5rem">I'm Interested In</label>
+        <div class="nl-pref">
+          <button class="js-pref-btn" data-pref="Running">Running</button>
+          <button class="js-pref-btn" data-pref="Lifestyle">Lifestyle</button>
+          <button class="js-pref-btn" data-pref="Training">Training</button>
+          <button class="js-pref-btn" data-pref="Limited Drops">Limited Drops</button>
+          <button class="js-pref-btn" data-pref="Collabs">Collabs</button>
+        </div>
+      </div>
+      <div id="js-nl-msg"></div>
+      <button class="nl-submit" id="js-nl-submit" disabled>Join STRYDE →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CART DRAWER -->
+<div id="js-cart-drawer" role="dialog" aria-label="Shopping bag">
+  <div class="cart-header">
+    <span class="cart-title">Your Bag</span>
+    <button class="js-cart-close" aria-label="Close cart">✕</button>
+  </div>
+  <div class="cart-items" id="js-cart-items">
+    <div class="cart-empty">
+      <div class="cart-empty-icon">🛍</div>
+      <span>Your bag is empty</span>
+    </div>
+  </div>
+  <div class="cart-footer" id="js-cart-footer" style="display:none">
+    <div class="cart-total-row">
+      <span class="cart-total-label">Subtotal</span>
+      <span id="js-cart-total" style="color:var(--accent)">$0</span>
+    </div>
+    <button class="cart-checkout">Checkout →</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="nav-logo" href="#">STRYDE</a>
+        <p>Move without limits. Crafted for athletes, designed for culture. Every pair tells a story.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <a href="#">Running</a>
+        <a href="#">Lifestyle</a>
+        <a href="#">Training</a>
+        <a href="#">Limited Editions</a>
+        <a href="#">Sale</a>
+      </div>
+      <div class="footer-col">
+        <h4>Help</h4>
+        <a href="#">Size Guide</a>
+        <a href="#">Shipping</a>
+        <a href="#">Returns</a>
+        <a href="#">Track Order</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Brand</h4>
+        <a href="#">Our Story</a>
+        <a href="#">Athletes</a>
+        <a href="#">Sustainability</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 STRYDE Footwear. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── CURSOR ── */
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+});
+(function animRing(){
+  rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+  cursorRing.style.left=rx+'px';cursorRing.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('button,a,[role=button]').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2.2)';});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';});
+});
+
+/* ── THEME ── */
+const html = document.documentElement;
+const saved = localStorage.getItem('stryde-theme')||'dark';
+html.setAttribute('data-theme',saved);
+syncTheme(saved);
+
+function syncTheme(t){
+  const dark = t==='dark';
+  document.querySelectorAll('.js-theme-btn,#js-theme-nav').forEach(b=>b.textContent=dark?'☀️':'🌙');
+  const bigToggle = document.getElementById('js-big-toggle');
+  const toggleIcon = document.getElementById('js-toggle-icon');
+  const toggleText = document.getElementById('js-toggle-mode-text');
+  if(bigToggle) bigToggle.classList.toggle('is-on',dark);
+  if(toggleIcon) toggleIcon.textContent = dark?'🌙':'☀️';
+  if(toggleText) toggleText.textContent = dark?'Dark Mode':'Light Mode';
+}
+function doToggle(){
+  const cur=html.getAttribute('data-theme');
+  const nxt=cur==='dark'?'light':'dark';
+  html.setAttribute('data-theme',nxt);
+  localStorage.setItem('stryde-theme',nxt);
+  syncTheme(nxt);
+}
+document.querySelectorAll('.js-theme-btn').forEach(b=>b.addEventListener('click',doToggle));
+const bigToggle = document.getElementById('js-big-toggle');
+if(bigToggle) bigToggle.addEventListener('click',doToggle);
+
+/* ── NAV SCROLL ── */
+const navbar = document.getElementById('js-navbar');
+window.addEventListener('scroll',()=>{
+  navbar.classList.toggle('is-scrolled',window.scrollY>40);
+  updateActiveNav();
+});
+function updateActiveNav(){
+  const sections=['products','configurator','theme-section','newsletter'];
+  let active=null;
+  sections.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&window.scrollY>=el.offsetTop-120) active=id;
+  });
+  document.querySelectorAll('.js-nav-link').forEach(l=>{
+    l.classList.toggle('is-active',l.dataset.target===active);
+  });
+}
+document.querySelectorAll('.js-nav-link').forEach(link=>{
+  link.addEventListener('click',()=>{
+    const t=document.getElementById(link.dataset.target);
+    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+
+/* ── INTERSECT ANIMATIONS ── */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('is-visible')});
+},{threshold:.12});
+document.querySelectorAll('.animate-in').forEach(el=>observer.observe(el));
+
+/* ── TOAST ── */
+let toastTimer=null;
+function showToast(msg){
+  const t=document.getElementById('js-toast');
+  if(toastTimer){clearTimeout(toastTimer);toastTimer=null;}
+  t.classList.remove('is-visible');
+  void t.offsetWidth; /* force reflow so animation restarts cleanly */
+  t.textContent=msg;
+  t.classList.add('is-visible');
+  toastTimer=setTimeout(()=>{
+    t.classList.remove('is-visible');
+    toastTimer=null;
+  },2800);
+}
+
+/* ── CART STATE ── */
+let cart=[];
+function renderCart(){
+  const itemsWrap=document.getElementById('js-cart-items');
+  const footer=document.getElementById('js-cart-footer');
+  const countEl=document.getElementById('js-cart-count');
+  const totalEl=document.getElementById('js-cart-total');
+  countEl.textContent=cart.length;
+  if(cart.length===0){
+    itemsWrap.innerHTML='<div class="cart-empty"><div class="cart-empty-icon">🛍</div><span>Your bag is empty</span></div>';
+    footer.style.display='none';return;
+  }
+  footer.style.display='block';
+  const total=cart.reduce((s,i)=>s+i.price,0);
+  totalEl.textContent='$'+total;
+  itemsWrap.innerHTML=cart.map((item,idx)=>`
+    <div class="cart-item">
+      <div class="cart-item-img">${item.emoji}</div>
+      <div style="flex:1">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-meta">Size ${item.size||'N/A'} · ${item.color||'Standard'}</div>
+        <div class="cart-item-price">$${item.price}</div>
+      </div>
+      <button class="js-cart-remove" data-idx="${idx}" aria-label="Remove">✕</button>
+    </div>`).join('');
+  itemsWrap.querySelectorAll('.js-cart-remove').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      cart.splice(+btn.dataset.idx,1);renderCart();
+    });
+  });
+}
+function addToCart(name,price,emoji,size,color){
+  cart.push({name,price:+price,emoji,size:size||'',color:color||''});
+  renderCart();showToast(name+' added to bag ✓');
+}
+
+/* ── PRODUCT FILTER ── */
+document.querySelectorAll('.js-filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.js-filter-btn').forEach(b=>b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    const f=btn.dataset.filter;
+    document.querySelectorAll('.product-card').forEach(card=>{
+      card.classList.toggle('is-hidden',f!=='all'&&card.dataset.category!==f);
+    });
+  });
+});
+
+/* ── ADD TO CART BUTTONS ── */
+document.querySelectorAll('.js-add-cart').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    addToCart(btn.dataset.name,btn.dataset.price,btn.dataset.emoji);
+    btn.textContent='Added ✓';btn.classList.add('is-added');
+    setTimeout(()=>{btn.textContent='Add to Bag';btn.classList.remove('is-added');},2000);
+  });
+});
+
+/* ── CART DRAWER ── */
+const drawer=document.getElementById('js-cart-drawer');
+const overlay=document.getElementById('js-cart-overlay');
+function openCart(){drawer.classList.add('is-open');overlay.classList.add('is-visible')}
+function closeCart(){drawer.classList.remove('is-open');overlay.classList.remove('is-visible')}
+document.getElementById('js-open-cart').addEventListener('click',openCart);
+document.querySelectorAll('.js-cart-close').forEach(b=>b.addEventListener('click',closeCart));
+overlay.addEventListener('click',closeCart);
+
+/* ── SIZE PICKER ── */
+let selSize=null,selColor=null;
+document.querySelectorAll('.js-size-btn:not(.is-unavailable)').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.js-size-btn').forEach(b=>b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    selSize=btn.dataset.size;
+    const disp=document.getElementById('js-size-display');
+    disp.textContent='US '+selSize+' selected';disp.classList.add('is-selected');
+    document.getElementById('js-summary-size').textContent='US '+selSize;
+    updatePickerBtn();
+  });
+});
+document.querySelectorAll('.js-color-swatch').forEach(sw=>{
+  sw.addEventListener('click',()=>{
+    document.querySelectorAll('.js-color-swatch').forEach(s=>s.style.outline='');
+    sw.style.outline='3px solid var(--accent)';sw.style.outlineOffset='3px';
+    selColor=sw.dataset.color;
+    document.getElementById('js-summary-color').textContent=selColor;
+    updatePickerBtn();
+  });
+});
+function updatePickerBtn(){
+  const btn=document.getElementById('js-picker-add');
+  if(selSize&&selColor){
+    btn.disabled=false;btn.textContent='Add to Bag — $189';
+  } else if(selSize){
+    btn.disabled=true;btn.textContent='Now Select a Color';
+  } else {
+    btn.disabled=true;btn.textContent='Select Size & Color to Continue';
+  }
+}
+document.getElementById('js-picker-add').addEventListener('click',()=>{
+  addToCart('Vapor Rush X1','189','👟',selSize,selColor);
+  openCart();
+});
+
+/* ── NEWSLETTER FORM ── */
+const nlName=document.getElementById('js-nl-name');
+const nlEmail=document.getElementById('js-nl-email');
+const nlHintName=document.getElementById('js-nl-hint-name');
+const nlHintEmail=document.getElementById('js-nl-hint-email');
+const nlSubmit=document.getElementById('js-nl-submit');
+const nlMsg=document.getElementById('js-nl-msg');
+let nlValid={name:false,email:false};
+const prefs=[];
+
+function setNlHint(input,hint,ok,msg){
+  hint.textContent=msg;
+  hint.className='nl-hint '+(msg?(ok?'is-ok':'is-err'):'');
+  input.className='nl-input '+(msg?(ok?'is-valid':'is-error'):'');
+}
+function checkNlSubmit(){nlSubmit.disabled=!(nlValid.name&&nlValid.email);}
+
+nlName.addEventListener('input',()=>{
+  const v=nlName.value.trim().length>=2;
+  nlValid.name=v;
+  setNlHint(nlName,nlHintName,v,nlName.value.trim()?(v?'✓ Great!':'Name must be at least 2 characters.'):'');
+  checkNlSubmit();
+});
+nlEmail.addEventListener('input',()=>{
+  const v=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nlEmail.value.trim());
+  nlValid.email=v;
+  setNlHint(nlEmail,nlHintEmail,v,nlEmail.value.trim()?(v?'✓ Valid email.':'Enter a valid email address.'):'');
+  checkNlSubmit();
+});
+document.querySelectorAll('.js-pref-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    btn.classList.toggle('is-active');
+    const p=btn.dataset.pref;
+    const i=prefs.indexOf(p);
+    if(i>-1)prefs.splice(i,1);else prefs.push(p);
+  });
+});
+nlSubmit.addEventListener('click',()=>{
+  nlMsg.className='ok';nlMsg.style.cssText='';
+  nlMsg.textContent='🎉 Welcome to STRYDE, '+nlName.value.trim()+'! First-drop access confirmed.';
+  nlMsg.style.display='block';
+  nlName.value='';nlEmail.value='';
+  [nlName,nlEmail].forEach(f=>{f.className='nl-input'});
+  [nlHintName,nlHintEmail].forEach(h=>{h.textContent='';h.className='nl-hint'});
+  nlValid={name:false,email:false};nlSubmit.disabled=true;
+  document.querySelectorAll('.js-pref-btn').forEach(b=>b.classList.remove('is-active'));
+  setTimeout(()=>{nlMsg.style.display='none';},6000);
+});
+</script>
+</body>
+</html>
